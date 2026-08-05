@@ -40,70 +40,71 @@ canvas {
 /* Top HUD Bar */
 .hud-top {
     position: absolute;
-    top: 12px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: clamp(6px, 1.5vw, 16px);
     background: rgba(10, 15, 30, 0.85);
     backdrop-filter: blur(10px);
-    padding: 6px 20px;
+    padding: clamp(3px, 0.8vh, 6px) clamp(10px, 2vw, 20px);
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     z-index: 10;
+    max-width: 95vw;
 }
 .score {
-    font-size: 20px;
+    font-size: clamp(14px, 3vh, 20px);
     font-weight: 900;
 }
 .score.blue { color: #00d9ff; text-shadow: 0 0 10px #00d9ff; }
 .score.red { color: #ff3366; text-shadow: 0 0 10px #ff3366; }
 .timer {
-    font-size: 15px;
+    font-size: clamp(11px, 2.2vh, 15px);
     color: #a0aec0;
     font-weight: 600;
-    min-width: 45px;
+    min-width: 38px;
     text-align: center;
 }
 .gold-box {
-    font-size: 14px;
+    font-size: clamp(11px, 2.2vh, 14px);
     color: #ffcc00;
     font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
 }
 .kda-box {
-    font-size: 13px;
+    font-size: clamp(10px, 2vh, 13px);
     color: #e2e8f0;
     background: rgba(255, 255, 255, 0.1);
-    padding: 3px 10px;
+    padding: 2px 8px;
     border-radius: 12px;
 }
 
 /* Top Action Buttons (Shop & Scoreboard) */
 .top-btns {
     position: absolute;
-    top: 12px;
-    left: 16px;
+    top: 8px;
+    left: 12px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     z-index: 30;
 }
 .hud-btn {
     background: rgba(15, 23, 42, 0.85);
-    border: 2px solid #ffcc00;
+    border: 1.5px solid #ffcc00;
     color: #ffcc00;
-    padding: 6px 14px;
+    padding: clamp(3px, 0.8vh, 6px) clamp(8px, 1.5vw, 14px);
     border-radius: 20px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: clamp(10px, 2vh, 13px);
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     box-shadow: 0 0 12px rgba(255, 204, 0, 0.25);
     backdrop-filter: blur(4px);
 }
@@ -118,11 +119,11 @@ canvas {
 .modal-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(5, 7, 15, 0.92);
+    background: rgba(5, 7, 15, 0.94);
     backdrop-filter: blur(12px);
     display: none;
     flex-direction: column;
-    padding: 20px 30px;
+    padding: clamp(10px, 2vh, 20px) clamp(12px, 3vw, 30px);
     z-index: 200;
     color: #fff;
 }
@@ -131,11 +132,11 @@ canvas {
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
 }
 .modal-title {
-    font-size: 22px;
+    font-size: clamp(15px, 3vh, 22px);
     font-weight: bold;
     color: #ffcc00;
     display: flex;
@@ -146,18 +147,18 @@ canvas {
     background: rgba(255, 255, 255, 0.1);
     border: none;
     color: #fff;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
 }
 
 /* Shop Modal UI */
 .shop-items-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
     overflow-y: auto;
     flex: 1;
     padding-right: 5px;
@@ -165,23 +166,23 @@ canvas {
 .item-card {
     background: rgba(30, 41, 59, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 8px;
+    padding: 8px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 .item-name {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
     color: #00d9ff;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 .item-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: #94a3b8;
-    margin-bottom: 10px;
-    line-height: 1.4;
+    margin-bottom: 6px;
+    line-height: 1.3;
 }
 .item-footer {
     display: flex;
@@ -191,16 +192,16 @@ canvas {
 .item-price {
     color: #ffcc00;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 12px;
 }
 .btn-buy {
     background: linear-gradient(135deg, #00d9ff, #0055ff);
     border: none;
     color: white;
-    padding: 6px 14px;
+    padding: 4px 10px;
     border-radius: 6px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 11px;
     cursor: pointer;
 }
 .btn-buy:disabled {
@@ -209,20 +210,20 @@ canvas {
     cursor: not-allowed;
 }
 .inventory-container {
-    margin-top: 10px;
+    margin-top: 8px;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
-    padding-top: 10px;
+    padding-top: 8px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 .inventory-slots {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 .slot-box {
-    width: 120px;
-    min-height: 38px;
+    width: 95px;
+    min-height: 32px;
     background: rgba(15, 23, 42, 0.8);
     border: 1px dashed rgba(0, 217, 255, 0.4);
     border-radius: 6px;
@@ -230,11 +231,11 @@ canvas {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 10px;
     color: #a0aec0;
-    padding: 4px 6px;
+    padding: 3px 4px;
     text-align: center;
-    gap: 3px;
+    gap: 2px;
 }
 .slot-box.filled {
     border: 1px solid #00d9ff;
@@ -246,9 +247,9 @@ canvas {
     background: rgba(255, 51, 102, 0.2);
     border: 1px solid #ff3366;
     color: #ff3366;
-    padding: 2px 8px;
+    padding: 2px 6px;
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: bold;
     cursor: pointer;
     width: 100%;
@@ -259,19 +260,19 @@ canvas {
 .scoreboard-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 .scoreboard-table th {
     background: rgba(15, 23, 42, 0.9);
     color: #94a3b8;
-    padding: 12px;
-    font-size: 13px;
+    padding: 8px;
+    font-size: 11px;
     text-align: left;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 .scoreboard-table td {
-    padding: 14px 12px;
-    font-size: 14px;
+    padding: 8px;
+    font-size: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     vertical-align: middle;
 }
@@ -281,36 +282,36 @@ canvas {
     font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 .dot-indicator {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
 }
 .dot-blue { background: #00d9ff; box-shadow: 0 0 8px #00d9ff; }
 .dot-red { background: #ff3366; box-shadow: 0 0 8px #ff3366; }
 .stats-badges {
     display: flex;
-    gap: 10px;
-    font-size: 12px;
+    gap: 6px;
+    font-size: 11px;
     color: #cbd5e1;
 }
 .stat-item {
     background: rgba(255, 255, 255, 0.08);
-    padding: 3px 8px;
+    padding: 2px 6px;
     border-radius: 4px;
 }
 .item-list-mini {
     display: flex;
-    gap: 6px;
+    gap: 4px;
 }
 .item-badge-mini {
     background: rgba(15, 23, 42, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 3px 8px;
+    padding: 2px 6px;
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 10px;
     color: #ffcc00;
 }
 .item-badge-empty {
@@ -318,7 +319,7 @@ canvas {
     color: #64748b;
 }
 
-/* Mobile Controls Layer */
+/* Mobile Controls Layer — Co giãn động linh hoạt theo màn hình di động */
 .touch-controls {
     position: absolute;
     inset: 0;
@@ -327,15 +328,15 @@ canvas {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    padding-left: max(35px, env(safe-area-inset-left));
-    padding-right: max(35px, env(safe-area-inset-right));
-    padding-bottom: max(45px, env(safe-area-inset-bottom));
+    padding-left: max(15px, env(safe-area-inset-left));
+    padding-right: max(15px, env(safe-area-inset-right));
+    padding-bottom: max(15px, env(safe-area-inset-bottom));
 }
 
-/* Left Analog Joystick */
+/* Left Analog Joystick (Dynamic Clamp Sizing) */
 .joystick-container {
-    width: 130px;
-    height: 130px;
+    width: clamp(90px, 22vh, 130px);
+    height: clamp(90px, 22vh, 130px);
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(0, 217, 255, 0.4);
     border-radius: 50%;
@@ -348,8 +349,8 @@ canvas {
     backdrop-filter: blur(4px);
 }
 .joystick-knob {
-    width: 52px;
-    height: 52px;
+    width: clamp(36px, 9vh, 52px);
+    height: clamp(36px, 9vh, 52px);
     background: radial-gradient(circle, #00d9ff 0%, #0055ff 100%);
     border-radius: 50%;
     position: absolute;
@@ -358,23 +359,23 @@ canvas {
     pointer-events: none;
 }
 
-/* Right Action Buttons Group */
+/* Right Action Buttons Group (Dynamic Clamp Sizing) */
 .action-buttons {
     display: flex;
-    gap: 16px;
+    gap: clamp(10px, 2vw, 16px);
     align-items: flex-end;
     pointer-events: auto;
 }
 .action-btn {
-    width: 65px;
-    height: 65px;
+    width: clamp(48px, 12vh, 65px);
+    height: clamp(48px, 12vh, 65px);
     border-radius: 50%;
     background: rgba(15, 23, 42, 0.88);
     border: 2px solid #00d9ff;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: clamp(18px, 4.5vh, 24px);
     color: #fff;
     box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
     position: relative;
@@ -388,10 +389,11 @@ canvas {
     background: rgba(0, 217, 255, 0.4);
 }
 .action-btn-main {
-    width: 80px;
-    height: 80px;
+    width: clamp(60px, 15vh, 80px);
+    height: clamp(60px, 15vh, 80px);
     border-color: #ff3366;
     box-shadow: 0 0 18px rgba(255, 51, 102, 0.4);
+    font-size: clamp(24px, 6vh, 32px);
 }
 .cooldown-overlay {
     position: absolute;
@@ -401,7 +403,7 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: clamp(11px, 2.5vh, 14px);
     font-weight: bold;
     color: #ff3366;
     pointer-events: none;
@@ -420,7 +422,7 @@ canvas {
     z-index: 100;
 }
 .game-over-title {
-    font-size: 44px;
+    font-size: clamp(28px, 6vh, 44px);
     font-weight: 900;
     margin-bottom: 10px;
     text-transform: uppercase;
@@ -429,9 +431,9 @@ canvas {
 .victory { color: #00d9ff; text-shadow: 0 0 25px #00d9ff; }
 .defeat { color: #ff3366; text-shadow: 0 0 25px #ff3366; }
 .restart-btn {
-    margin-top: 25px;
-    padding: 12px 32px;
-    font-size: 18px;
+    margin-top: 20px;
+    padding: clamp(8px, 2vh, 12px) clamp(20px, 4vw, 32px);
+    font-size: clamp(14px, 3vh, 18px);
     font-weight: bold;
     color: #fff;
     background: linear-gradient(135deg, #00d9ff, #0055ff);
@@ -439,6 +441,70 @@ canvas {
     border-radius: 25px;
     cursor: pointer;
     box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+}
+
+/* =============================================
+   CẢNH BÁO XOAY NGANG MÀN HÌNH CHỦ ĐỘNG
+   ============================================= */
+#rotate-device-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 7, 15, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    z-index: 999999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+}
+
+.rotate-card {
+    background: rgba(15, 23, 42, 0.9);
+    border: 2px solid rgba(0, 217, 255, 0.4);
+    box-shadow: 0 0 40px rgba(0, 217, 255, 0.25);
+    border-radius: 20px;
+    padding: 30px 24px;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.phone-icon-anim {
+    font-size: 54px;
+    animation: rotatePhone 2s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+    0%   { transform: rotate(0deg); }
+    40%  { transform: rotate(-90deg); }
+    70%  { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.rotate-card h2 {
+    font-size: 18px;
+    font-weight: 900;
+    color: #00d9ff;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+}
+
+.rotate-card p {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.5;
+}
+
+/* Hiển thị overlay khi xoay dọc trên thiết bị màn hình hẹp */
+@media screen and (orientation: portrait) {
+    #rotate-device-overlay {
+        display: flex !important;
+    }
 }
 
 /* Ẩn controls di động trên máy tính (hover + fine pointer = chuột/trackpad) */
