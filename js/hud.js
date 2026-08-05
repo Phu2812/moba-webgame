@@ -2,31 +2,39 @@
 // CẬP NHẬT HUD
 // =============================================
 function updateHUD() {
-    document.getElementById('blue-score').innerText     = player.kills;
-    document.getElementById('red-score').innerText      = bot.kills;
-    document.getElementById('kda-text').innerText       = `${player.kills}/${player.deaths}/${player.assists}`;
-    document.getElementById('hud-gold').innerText       = Math.floor(player.gold);
-    document.getElementById('hud-gold-shop').innerText  = Math.floor(player.gold);
-    document.getElementById('shop-gold-val').innerText  = Math.floor(player.gold);
+    document.getElementById('blue-score').innerText    = player.kills;
+    document.getElementById('red-score').innerText     = bot.kills;
+    document.getElementById('kda-text').innerText      = `${player.kills}/${player.deaths}/${player.assists}`;
+    document.getElementById('hud-gold').innerText      = Math.floor(player.gold);
+    document.getElementById('hud-gold-shop').innerText = Math.floor(player.gold);
+    document.getElementById('shop-gold-val').innerText = Math.floor(player.gold);
 
     const mins = Math.floor(gameTime / 60).toString().padStart(2, '0');
     const secs = Math.floor(gameTime % 60).toString().padStart(2, '0');
     document.getElementById('game-timer').innerText = `${mins}:${secs}`;
 
+    // Mobile touch CD
     const cdAtkEl = document.getElementById('cd-attack');
-    if (player.atkCd > 0) {
-        cdAtkEl.style.display = 'flex';
+    const cdSk1El = document.getElementById('cd-skill1');
+    if (cdAtkEl) {
+        cdAtkEl.style.display = player.atkCd > 0 ? 'flex' : 'none';
         cdAtkEl.innerText     = player.atkCd.toFixed(1);
-    } else {
-        cdAtkEl.style.display = 'none';
+    }
+    if (cdSk1El) {
+        cdSk1El.style.display = player.skill1Cd > 0 ? 'flex' : 'none';
+        cdSk1El.innerText     = player.skill1Cd.toFixed(1);
     }
 
-    const cdSk1El = document.getElementById('cd-skill1');
-    if (player.skill1Cd > 0) {
-        cdSk1El.style.display = 'flex';
-        cdSk1El.innerText     = player.skill1Cd.toFixed(1);
-    } else {
-        cdSk1El.style.display = 'none';
+    // Desktop CD HUD
+    const deskAtkEl = document.getElementById('desktop-cd-attack');
+    const deskSk1El = document.getElementById('desktop-cd-skill1');
+    if (deskAtkEl) {
+        deskAtkEl.style.display = player.atkCd > 0 ? 'flex' : 'none';
+        deskAtkEl.innerText     = player.atkCd.toFixed(1);
+    }
+    if (deskSk1El) {
+        deskSk1El.style.display = player.skill1Cd > 0 ? 'flex' : 'none';
+        deskSk1El.innerText     = player.skill1Cd.toFixed(1);
     }
 }
 
@@ -179,3 +187,37 @@ function endGame(isVictory) {
     title.innerText      = isVictory ? 'VICTORY' : 'DEFEAT';
     stats.innerText      = `KDA: ${player.kills}/${player.deaths}/${player.assists} | Thời gian: ${document.getElementById('game-timer').innerText}`;
 }
+
+// =============================================
+// PWA INSTALLATION (TẢI APP VỀ MÁY) & SERVICE WORKER
+// =============================================
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('btn-install-app');
+    if (btn) btn.style.display = 'flex';
+});
+
+function installPWA() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choice) => {
+        if (choice.outcome === 'accepted') {
+            const btn = document.getElementById('btn-install-app');
+            if (btn) btn.style.display = 'none';
+        }
+        deferredPrompt = null;
+    });
+}
+
+// Đăng ký Service Worker cho PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+            console.log('SW Registration failed: ', err);
+        });
+    });
+}
+
