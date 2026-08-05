@@ -1,4 +1,10 @@
 // =============================================
+// CANVAS & CONTEXT
+// =============================================
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+
+// =============================================
 // HẰNG SỐ GAME
 // =============================================
 const GAME_WIDTH    = 1600;

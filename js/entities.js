@@ -1,6 +1,8 @@
 // =============================================
-// FLOATING TEXT
+// THÀNH PHẦN CORE GAME (ENTITIES)
 // =============================================
+
+// --- FLOATING TEXT ---
 class FloatingText {
     constructor(x, y, text, color = '#ffcc00') {
         this.x     = x;
@@ -10,7 +12,7 @@ class FloatingText {
         this.alpha = 1.0;
     }
     update(dt) {
-        this.y    -= 25 * dt;
+        this.y     -= 25 * dt;
         this.alpha -= 0.7 * dt;
     }
     draw() {
@@ -24,9 +26,7 @@ class FloatingText {
     }
 }
 
-// =============================================
-// PARTICLE
-// =============================================
+// --- PARTICLE ---
 class Particle {
     constructor(x, y, color) {
         this.x      = x;
@@ -54,14 +54,10 @@ class Particle {
 }
 
 function createParticles(x, y, color, count = 8) {
-    for (let i = 0; i < count; i++) {
-        particles.push(new Particle(x, y, color));
-    }
+    for (let i = 0; i < count; i++) particles.push(new Particle(x, y, color));
 }
 
-// =============================================
-// PROJECTILE
-// =============================================
+// --- PROJECTILE ---
 class Projectile {
     constructor(x, y, target, damage, speed, color, type = 'normal', owner = null) {
         this.x      = x;
@@ -77,24 +73,19 @@ class Projectile {
         this.active = true;
         this.life   = 2.5;
 
-        const spawnOffset = owner ? owner.radius + 12 : 0;
+        const offset = owner ? owner.radius + 12 : 0;
+        const angle = Math.atan2(target.y - y, target.x - x);
+        this.x += Math.cos(angle) * offset;
+        this.y += Math.sin(angle) * offset;
 
         if (type === 'skill') {
-            const angle = Math.atan2(target.y - y, target.x - x);
-            this.x  += Math.cos(angle) * spawnOffset;
-            this.y  += Math.sin(angle) * spawnOffset;
-            this.vx  = Math.cos(angle) * speed;
-            this.vy  = Math.sin(angle) * speed;
-        } else if (target && target.x !== undefined && target.y !== undefined) {
-            const angle = Math.atan2(target.y - y, target.x - x);
-            this.x += Math.cos(angle) * spawnOffset;
-            this.y += Math.sin(angle) * spawnOffset;
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed;
         }
     }
 
     update(dt) {
         if (!this.active) return;
-
         this.life -= dt;
         if (this.life <= 0 || this.x < -100 || this.x > GAME_WIDTH + 100 || this.y < -100 || this.y > GAME_HEIGHT + 100) {
             this.active = false;
@@ -104,37 +95,27 @@ class Projectile {
         if (this.type === 'skill') {
             this.x += this.vx;
             this.y += this.vy;
-
             const enemies = [...minions, player, bot, ...turrets, ...nexuses].filter(e =>
                 e && !e.isDead && e.hp > 0 && e.team !== this.team && e !== this.owner
             );
             for (let e of enemies) {
                 if (Math.hypot(e.x - this.x, e.y - this.y) < e.radius + this.radius) {
-                    if (typeof e.takeDamage === 'function') {
-                        e.takeDamage(this.damage, this.owner);
-                    } else {
-                        e.hp -= this.damage;
-                    }
+                    e.takeDamage ? e.takeDamage(this.damage, this.owner) : (e.hp -= this.damage);
                     createParticles(this.x, this.y, this.color, 12);
                     this.active = false;
                     break;
                 }
             }
         } else {
-            if (!this.target || (this.target.hp !== undefined && this.target.hp <= 0) || this.target.isDead) {
+            if (!this.target || this.target.hp <= 0 || this.target.isDead) {
                 this.active = false;
                 return;
             }
-
             const dist  = Math.hypot(this.target.x - this.x, this.target.y - this.y);
             const angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
 
             if (dist <= this.speed || dist < 15) {
-                if (typeof this.target.takeDamage === 'function') {
-                    this.target.takeDamage(this.damage, this.owner);
-                } else {
-                    this.target.hp -= this.damage;
-                }
+                this.target.takeDamage ? this.target.takeDamage(this.damage, this.owner) : (this.target.hp -= this.damage);
                 createParticles(this.x, this.y, this.color, 5);
                 this.active = false;
             } else {
@@ -157,9 +138,7 @@ class Projectile {
     }
 }
 
-// =============================================
-// HERO
-// =============================================
+// --- HERO ---
 class Hero {
     constructor(x, y, team, name, color) {
         this.x    = x;
@@ -180,9 +159,8 @@ class Hero {
         this.skill1Cd    = 0;
         this.maxSkill1Cd = 4.5;
 
-        this.gold  = 300;
-        this.items = []; // Tối đa MAX_ITEMS (3 món)
-
+        this.gold    = 300;
+        this.items   = [];
         this.kills   = 0;
         this.deaths  = 0;
         this.assists = 0;
@@ -197,15 +175,13 @@ class Hero {
             if (this.respawnTimer <= 0) {
                 this.isDead = false;
                 this.hp     = this.maxHp;
-                this.x      = this.team === 'blue' ? 150 : 1450;
+                this.x      = this.team === 'blue' ? 65 : 1535;
                 this.y      = 450;
             }
             return;
         }
 
-        // Tăng 8 Vàng / giây
-        this.gold += 8 * dt;
-
+        this.gold += 8 * dt; // Tăng vàng thời gian
         if (this.hp < this.maxHp) this.hp = Math.min(this.maxHp, this.hp + this.hpRegen * dt);
         if (this.atkCd    > 0) this.atkCd    -= dt;
         if (this.skill1Cd > 0) this.skill1Cd -= dt;
@@ -216,6 +192,7 @@ class Hero {
     clampPosition() {
         this.x = Math.max(this.radius, Math.min(GAME_WIDTH  - this.radius, this.x));
         this.y = Math.max(LANE_TOP + this.radius, Math.min(LANE_BOTTOM - this.radius, this.y));
+        handleBuildingCollisions(this);
     }
 
     buyItem(item) {
@@ -232,19 +209,19 @@ class Hero {
         return false;
     }
 
-    // Bán trang bị (hoàn trả 60% giá và xóa bỏ chỉ số)
     sellItem(index) {
         if (index < 0 || index >= this.items.length) return false;
         const item   = this.items[index];
         const refund = Math.floor(item.price * SELL_RATIO);
         this.gold   += refund;
         this.items.splice(index, 1);
-        // Tính lại chỉ số từ đầu để tránh sai số dồn
+
         this.atkDmg   = 65;
         this.maxHp    = 1000;
         this.speed    = 5;
         this.hpRegen  = 6;
         this.maxAtkCd = 0.8;
+
         for (const i of this.items) {
             if (i.stats.atkDmg)      this.atkDmg  += i.stats.atkDmg;
             if (i.stats.maxHp)       this.maxHp   += i.stats.maxHp;
@@ -315,14 +292,12 @@ class Hero {
     }
 }
 
-// =============================================
-// TURRET
-// =============================================
+// --- TURRET ---
 class Turret {
     constructor(x, y, team) {
         this.x        = x;
         this.y        = y;
-        this.radius   = 35;
+        this.radius   = 28;
         this.team     = team;
         this.maxHp    = 2500;
         this.hp       = 2500;
@@ -343,8 +318,8 @@ class Turret {
             );
 
             targets.sort((a, b) => {
-                const isMinionA = a instanceof Minion ? 0 : 1;
-                const isMinionB = b instanceof Minion ? 0 : 1;
+                const isMinionA = (a instanceof Minion) ? 0 : 1;
+                const isMinionB = (b instanceof Minion) ? 0 : 1;
                 if (isMinionA !== isMinionB) return isMinionA - isMinionB;
                 return Math.hypot(a.x - this.x, a.y - this.y) - Math.hypot(b.x - this.x, b.y - this.y);
             });
@@ -361,6 +336,7 @@ class Turret {
         if (this.hp <= 0) return;
         this.hp -= amount;
         if (this.hp <= 0) {
+            navVersion++; // Lính & Bot tự tính lại A* khi trụ bị phá
             let killer       = attacker ? (attacker instanceof Hero ? attacker : attacker.owner) : null;
             let rewardedHero = killer || (this.team === 'red' ? player : bot);
             if (rewardedHero) {
@@ -399,14 +375,12 @@ class Turret {
     }
 }
 
-// =============================================
-// NEXUS
-// =============================================
+// --- NEXUS ---
 class Nexus {
     constructor(x, y, team) {
         this.x      = x;
         this.y      = y;
-        this.radius = 50;
+        this.radius = 40;
         this.team   = team;
         this.maxHp  = 4000;
         this.hp     = 4000;
@@ -439,142 +413,53 @@ class Nexus {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x - barW / 2, this.y - this.radius - 18, barW * (Math.max(0, this.hp) / this.maxHp), barH);
     }
-}
-
-// =============================================
-// MINION
-// =============================================
-class Minion {
-    constructor(x, y, team) {
-        this.x      = x;
-        this.y      = y;
-        this.team   = team;
-        this.radius = 14;
-        this.hp     = 350;
-        this.maxHp  = 350;
-        this.speed  = 2.2;
-        this.atkDmg = 25;
-        this.range  = 80;
-        this.atkCd  = 0;
-        this.color  = team === 'blue' ? '#48bb78' : '#ed8936';
-    }
-
-    update(dt) {
-        if (this.hp <= 0) return;
-        if (this.atkCd > 0) this.atkCd -= dt;
-
-        let targets = [...minions, player, bot, ...turrets, ...nexuses].filter(e =>
-            e && !e.isDead && e.hp > 0 && e.team !== this.team
-        );
-
-        targets.sort((a, b) => Math.hypot(a.x - this.x, a.y - this.y) - Math.hypot(b.x - this.x, b.y - this.y));
-
-        if (targets.length > 0 && Math.hypot(targets[0].x - this.x, targets[0].y - this.y) <= this.range) {
-            if (this.atkCd <= 0) {
-                targets[0].takeDamage ? targets[0].takeDamage(this.atkDmg, this) : (targets[0].hp -= this.atkDmg);
-                this.atkCd = 1.2;
-                createParticles(targets[0].x, targets[0].y, '#fff', 3);
-            }
-        } else {
-            const targetX = this.team === 'blue' ? GAME_WIDTH - 100 : 100;
-            const angle   = Math.atan2(450 - this.y, targetX - this.x);
-            this.x += Math.cos(angle) * this.speed;
-            this.y += Math.sin(angle) * this.speed;
-            this.y  = Math.max(LANE_TOP + this.radius, Math.min(LANE_BOTTOM - this.radius, this.y));
-        }
-    }
-
-    draw() {
-        if (this.hp <= 0) return;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-
-        ctx.fillStyle = '#000';
-        ctx.fillRect(this.x - 12, this.y - 20, 24, 4);
-        ctx.fillStyle = '#48bb78';
-        ctx.fillRect(this.x - 12, this.y - 20, 24 * (Math.max(0, this.hp) / this.maxHp), 4);
-    }
 
     takeDamage(amount, attacker) {
+        if (this.hp <= 0) return;
         this.hp -= amount;
-        if (this.hp <= 0) {
-            let killer = attacker ? (attacker instanceof Hero ? attacker : attacker.owner) : null;
-            if (killer) {
-                killer.gold += 55;
-                if (killer === player) player.assists++;
-                floatingTexts.push(new FloatingText(this.x, this.y, '+55g', '#ffcc00'));
-            }
-        }
+        if (this.hp <= 0) navVersion++;
     }
 }
 
-// =============================================
-// TẾ ĐÀN (Khu vực hồi máu tại căn cứ)
-// =============================================
+// --- SHRINE ---
 class Shrine {
-    constructor(x, y, team) {
+    constructor(x, y, width, height, team) {
         this.x      = x;
         this.y      = y;
-        this.radius = 48;
+        this.width  = width;
+        this.height = height;
         this.team   = team;
         this.color  = team === 'blue' ? '#00d9ff' : '#ff3366';
-        this.pulseT = 0;
     }
 
     update(dt) {
-        this.pulseT += dt;
-        const heroes = [player, bot];
-        for (const h of heroes) {
-            if (h.team === this.team && !h.isDead && Math.hypot(h.x - this.x, h.y - this.y) <= this.radius) {
-                if (h.hp < h.maxHp) {
-                    h.hp = Math.min(h.maxHp, h.hp + SHRINE_HEAL_RATE * dt);
+        const units = [player, bot].filter(u => u && !u.isDead && u.hp > 0 && u.team === this.team);
+        for (const unit of units) {
+            if (
+                unit.x >= this.x &&
+                unit.x <= this.x + this.width &&
+                unit.y >= this.y &&
+                unit.y <= this.y + this.height
+            ) {
+                if (unit.hp < unit.maxHp) {
+                    unit.hp = Math.min(unit.maxHp, unit.hp + SHRINE_HEAL_RATE * dt);
                 }
             }
         }
     }
 
     draw() {
-        const pulse = 0.12 + 0.06 * Math.sin(this.pulseT * 2.5);
-        const ring  = 0.55 + 0.2  * Math.sin(this.pulseT * 2.5);
-
-        // Nền sáng nhấp nháy
         ctx.save();
-        ctx.globalAlpha = pulse;
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur  = 30;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.restore();
+        ctx.fillStyle   = this.team === 'blue' ? 'rgba(0, 217, 255, 0.08)' : 'rgba(255, 51, 102, 0.08)';
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth   = 3;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-        // Viền ngoài
-        ctx.save();
-        ctx.globalAlpha  = ring;
-        ctx.shadowColor  = this.color;
-        ctx.shadowBlur   = 15;
-        ctx.strokeStyle  = this.color;
-        ctx.lineWidth    = 2;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-
-        // Biểu tượng và chự đề
-        ctx.save();
-        ctx.globalAlpha   = 0.9;
-        ctx.font          = '20px sans-serif';
-        ctx.textAlign     = 'center';
-        ctx.textBaseline  = 'middle';
-        ctx.fillText('⛩️', this.x, this.y - 8);
-        ctx.font          = 'bold 10px sans-serif';
-        ctx.fillStyle     = this.color;
-        ctx.textBaseline  = 'top';
-        ctx.shadowColor   = this.color;
-        ctx.shadowBlur    = 6;
-        ctx.fillText('TẾ ĐÀN', this.x, this.y + 14);
+        ctx.fillStyle   = this.color;
+        ctx.font        = 'bold 13px sans-serif';
+        ctx.textAlign   = 'center';
+        ctx.fillText('⛩️ TẾ ĐÀN', this.x + this.width / 2, this.y + this.height / 2);
         ctx.restore();
     }
 }

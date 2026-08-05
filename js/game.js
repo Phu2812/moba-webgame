@@ -1,10 +1,4 @@
 // =============================================
-// CANVAS & CONTEXT
-// =============================================
-const canvas = document.getElementById('gameCanvas');
-const ctx    = canvas.getContext('2d');
-
-// =============================================
 // STATE TOÀN CỤC
 // =============================================
 const keys = {};
@@ -103,6 +97,9 @@ function gameLoop(timestamp) {
         particles.forEach(p  => p.update());
         floatingTexts.forEach(ft => ft.update(dt));
 
+        // Va chạm giữa các đơn vị (không cho đi đè lên nhau)
+        handleUnitCollisions();
+
         // Dọn dẹp đối tượng chết/hết hiệu lực
         minions       = minions.filter(m  => m.hp > 0);
         projectiles   = projectiles.filter(p  => p.active);
@@ -139,17 +136,17 @@ function initGame() {
     gameTime        = 0;
     lastMinionSpawn = 0;
 
-    player = new Hero(200,  450, 'blue', 'Valhein (Bạn)', '#00d9ff');
-    bot    = new Hero(1400, 450, 'red',  'Yorn (Bot)',     '#ff3366');
+    player = new Hero(65,   450, 'blue', 'Valhein (Bạn)', '#00d9ff');
+    bot    = new Hero(1535, 450, 'red',  'Yorn (Bot)',     '#ff3366');
 
     turrets = [
-        new Turret(450,  450, 'blue'),
-        new Turret(1150, 450, 'red')
+        new Turret(480,  450, 'blue'),
+        new Turret(1120, 450, 'red')
     ];
 
     nexuses = [
-        new Nexus(120,  450, 'blue'),
-        new Nexus(1480, 450, 'red')
+        new Nexus(180,  450, 'blue'),
+        new Nexus(1420, 450, 'red')
     ];
 
     minions       = [];
@@ -157,10 +154,10 @@ function initGame() {
     particles     = [];
     floatingTexts = [];
 
-    // Tế Đàn: đặt sát cạnh Nexus của mỗi đội, trên đường tâm lane
+    // Tế Đàn: Hình chữ nhật nằm phía sau Nhà Chính của mỗi đội
     shrines = [
-        new Shrine(100,  395, 'blue'),
-        new Shrine(1500, 395, 'red')
+        new Shrine(15,   340, 95, 220, 'blue'),
+        new Shrine(1490, 340, 95, 220, 'red')
     ];
 
     document.getElementById('game-over').style.display         = 'none';
