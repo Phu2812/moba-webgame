@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MOBA 1v1 Mobile Arena</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="game-wrapper">
+    <div class="top-btns">
+        <button class="hud-btn" onclick="toggleShop()">🛒 Shop (<span id="hud-gold-shop">300</span>g)</button>
+        <button class="hud-btn scoreboard-btn" onclick="toggleScoreboard()">📊 BXH (Tab)</button>
+    </div>
+
+    <div class="hud-top">
+        <span class="score blue" id="blue-score">0</span>
+        <span class="timer" id="game-timer">00:00</span>
+        <span class="score red" id="red-score">0</span>
+        <div class="gold-box">💰 <span id="hud-gold">300</span></div>
+        <div class="kda-box">KDA: <span id="kda-text">0/0/0</span></div>
+    </div>
+
+    <!-- CỬA HÀNG TRANG BỊ -->
+    <div class="modal-overlay" id="shop-modal">
+        <div class="modal-header">
+            <div class="modal-title">🛒 CỬA HÀNG TRANG BỊ (Vàng: <span id="shop-gold-val" style="color:#ffcc00">300</span>g)</div>
+            <button class="btn-close-modal" onclick="toggleShop()">✖</button>
+        </div>
+        <div class="shop-items-grid" id="shop-grid"></div>
+        <div class="inventory-container">
+            <span style="font-size: 13px; color: #cbd5e1; font-weight: bold;">Kho đồ (Tối đa 3 món):</span>
+            <div class="inventory-slots" id="inventory-slots"></div>
+        </div>
+    </div>
+
+    <!-- BẢNG XẾP HẠNG -->
+    <div class="modal-overlay" id="scoreboard-modal">
+        <div class="modal-header">
+            <div class="modal-title" style="color: #00d9ff;">📊 BẢNG XẾP HẠNG TRẬN ĐẤU</div>
+            <button class="btn-close-modal" onclick="toggleScoreboard()">✖</button>
+        </div>
+        <table class="scoreboard-table">
+            <thead>
+                <tr>
+                    <th>TƯỚNG / ĐỘI</th>
+                    <th>KDA</th>
+                    <th>CHỈ SỐ TƯỚNG</th>
+                    <th>VÀNG</th>
+                    <th>TRANG BỊ (3 Ô)</th>
+                </tr>
+            </thead>
+            <tbody id="scoreboard-body"></tbody>
+        </table>
+    </div>
+
+    <!-- TOUCH CONTROLS -->
+    <div class="touch-controls">
+        <div class="joystick-container" id="joystick">
+            <div class="joystick-knob" id="joystick-knob"></div>
+        </div>
+        <div class="action-buttons">
+            <div class="action-btn" id="btn-skill1">
+                <span>🔥</span>
+                <div class="cooldown-overlay" id="cd-skill1" style="display: none;"></div>
+            </div>
+            <div class="action-btn action-btn-main" id="btn-attack">
+                <span>⚔️</span>
+                <div class="cooldown-overlay" id="cd-attack" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div class="game-over-screen" id="game-over">
+        <div class="game-over-title" id="game-over-title">VICTORY</div>
+        <div style="font-size: 18px; color: #a0aec0;" id="game-over-stats">KDA: 0/0/0</div>
+        <button class="restart-btn" onclick="resetGame()">Chơi Lại</button>
+    </div>
+
+    <canvas id="gameCanvas" width="1600" height="900"></canvas>
+</div>
+
+<!-- Thứ tự import quan trọng: constants → entities → bot → combat → hud → input → game -->
+<script src="js/constants.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/bot.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/input.js"></script>
+<script src="js/game.js"></script>
+
+</body>
+</html>
