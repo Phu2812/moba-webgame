@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>MOBA 1v1 Mobile Arena</title>
+
+    <!-- PWA WEB APP SUPPORT -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#05070f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MOBA 1v1">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,6 +30,7 @@
     <div class="top-btns">
         <button class="hud-btn" onclick="toggleShop()">🛒 Shop (<span id="hud-gold-shop">300</span>g)</button>
         <button class="hud-btn scoreboard-btn" onclick="toggleScoreboard()">📊 BXH (Tab)</button>
+        <button class="hud-btn install-btn" id="btn-install-app" style="display:none;" onclick="installPWA()">📲 Tải App</button>
     </div>
 
     <div class="hud-top">
@@ -29,6 +39,20 @@
         <span class="score red" id="red-score">0</span>
         <div class="gold-box">💰 <span id="hud-gold">300</span></div>
         <div class="kda-box">KDA: <span id="kda-text">0/0/0</span></div>
+    </div>
+
+    <!-- DESKTOP COOLDOWN HUD -->
+    <div class="desktop-cd-bar" id="desktop-cd-bar">
+        <div class="desktop-cd-item" title="Đánh thường (Space / Click)">
+            <span class="key-badge">Space</span>
+            <span class="icon">⚔️</span>
+            <div class="cd-overlay" id="desktop-cd-attack" style="display: none;"></div>
+        </div>
+        <div class="desktop-cd-item" title="Chiêu 1 (Phím Q)">
+            <span class="key-badge">Q</span>
+            <span class="icon">🔥</span>
+            <div class="cd-overlay" id="desktop-cd-skill1" style="display: none;"></div>
+        </div>
     </div>
 
     <!-- CỬA HÀNG TRANG BỊ -->
