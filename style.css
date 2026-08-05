@@ -1,0 +1,447 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+body {
+    background-color: #05070f;
+    color: #fff;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: none;
+}
+#game-wrapper {
+    position: relative;
+    width: 100vw;
+    height: 56.25vw; /* 16:9 Aspect Ratio */
+    max-height: 100vh;
+    max-width: 177.78vh;
+    background: #000;
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    touch-action: none;
+}
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+}
+
+/* Top HUD Bar */
+.hud-top {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(10, 15, 30, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 6px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+.score {
+    font-size: 20px;
+    font-weight: 900;
+}
+.score.blue { color: #00d9ff; text-shadow: 0 0 10px #00d9ff; }
+.score.red { color: #ff3366; text-shadow: 0 0 10px #ff3366; }
+.timer {
+    font-size: 15px;
+    color: #a0aec0;
+    font-weight: 600;
+    min-width: 45px;
+    text-align: center;
+}
+.gold-box {
+    font-size: 14px;
+    color: #ffcc00;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.kda-box {
+    font-size: 13px;
+    color: #e2e8f0;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3px 10px;
+    border-radius: 12px;
+}
+
+/* Top Action Buttons (Shop & Scoreboard) */
+.top-btns {
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    display: flex;
+    gap: 10px;
+    z-index: 30;
+}
+.hud-btn {
+    background: rgba(15, 23, 42, 0.85);
+    border: 2px solid #ffcc00;
+    color: #ffcc00;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 0 12px rgba(255, 204, 0, 0.25);
+    backdrop-filter: blur(4px);
+}
+.hud-btn.scoreboard-btn {
+    border-color: #00d9ff;
+    color: #00d9ff;
+    box-shadow: 0 0 12px rgba(0, 217, 255, 0.25);
+}
+.hud-btn:active { transform: scale(0.95); }
+
+/* Modals Base */
+.modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 7, 15, 0.92);
+    backdrop-filter: blur(12px);
+    display: none;
+    flex-direction: column;
+    padding: 20px 30px;
+    z-index: 200;
+    color: #fff;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+.modal-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffcc00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-close-modal {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Shop Modal UI */
+.shop-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 5px;
+}
+.item-card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.item-name {
+    font-size: 15px;
+    font-weight: bold;
+    color: #00d9ff;
+    margin-bottom: 4px;
+}
+.item-desc {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+.item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.item-price {
+    color: #ffcc00;
+    font-weight: bold;
+    font-size: 14px;
+}
+.btn-buy {
+    background: linear-gradient(135deg, #00d9ff, #0055ff);
+    border: none;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+}
+.btn-buy:disabled {
+    background: #475569;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+.inventory-container {
+    margin-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.inventory-slots {
+    display: flex;
+    gap: 10px;
+}
+.slot-box {
+    width: 120px;
+    min-height: 38px;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px dashed rgba(0, 217, 255, 0.4);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #a0aec0;
+    padding: 4px 6px;
+    text-align: center;
+    gap: 3px;
+}
+.slot-box.filled {
+    border: 1px solid #00d9ff;
+    background: rgba(0, 217, 255, 0.15);
+    color: #fff;
+    font-weight: bold;
+}
+.btn-sell {
+    background: rgba(255, 51, 102, 0.2);
+    border: 1px solid #ff3366;
+    color: #ff3366;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+.btn-sell:hover { background: rgba(255, 51, 102, 0.4); }
+
+/* Scoreboard UI */
+.scoreboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+.scoreboard-table th {
+    background: rgba(15, 23, 42, 0.9);
+    color: #94a3b8;
+    padding: 12px;
+    font-size: 13px;
+    text-align: left;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+.scoreboard-table td {
+    padding: 14px 12px;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    vertical-align: middle;
+}
+.team-blue-row { background: rgba(0, 217, 255, 0.06); }
+.team-red-row { background: rgba(255, 51, 102, 0.06); }
+.player-name-cell {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.dot-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.dot-blue { background: #00d9ff; box-shadow: 0 0 8px #00d9ff; }
+.dot-red { background: #ff3366; box-shadow: 0 0 8px #ff3366; }
+.stats-badges {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+.stat-item {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+.item-list-mini {
+    display: flex;
+    gap: 6px;
+}
+.item-badge-mini {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #ffcc00;
+}
+.item-badge-empty {
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    color: #64748b;
+}
+
+/* Mobile Controls Layer */
+.touch-controls {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-left: max(35px, env(safe-area-inset-left));
+    padding-right: max(35px, env(safe-area-inset-right));
+    padding-bottom: max(45px, env(safe-area-inset-bottom));
+}
+
+/* Left Analog Joystick */
+.joystick-container {
+    width: 130px;
+    height: 130px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(0, 217, 255, 0.4);
+    border-radius: 50%;
+    position: relative;
+    pointer-events: auto;
+    touch-action: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+.joystick-knob {
+    width: 52px;
+    height: 52px;
+    background: radial-gradient(circle, #00d9ff 0%, #0055ff 100%);
+    border-radius: 50%;
+    position: absolute;
+    box-shadow: 0 0 15px #00d9ff;
+    transform: translate(0, 0);
+    pointer-events: none;
+}
+
+/* Right Action Buttons Group */
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    pointer-events: auto;
+}
+.action-btn {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.88);
+    border: 2px solid #00d9ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+    position: relative;
+    touch-action: none;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: transform 0.05s ease;
+}
+.action-btn:active, .action-btn.active {
+    transform: scale(0.88);
+    background: rgba(0, 217, 255, 0.4);
+}
+.action-btn-main {
+    width: 80px;
+    height: 80px;
+    border-color: #ff3366;
+    box-shadow: 0 0 18px rgba(255, 51, 102, 0.4);
+}
+.cooldown-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ff3366;
+    pointer-events: none;
+}
+
+/* Game Over Panel */
+.game-over-screen {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 7, 15, 0.92);
+    backdrop-filter: blur(15px);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+.game-over-title {
+    font-size: 44px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+.victory { color: #00d9ff; text-shadow: 0 0 25px #00d9ff; }
+.defeat { color: #ff3366; text-shadow: 0 0 25px #ff3366; }
+.restart-btn {
+    margin-top: 25px;
+    padding: 12px 32px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #00d9ff, #0055ff);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+}
+
+/* Ẩn controls di động trên máy tính (hover + fine pointer = chuột/trackpad) */
+@media (hover: hover) and (pointer: fine) {
+    .touch-controls { display: none !important; }
+}
