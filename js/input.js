@@ -126,3 +126,26 @@ function attachButtonTouchHandler(btnEl, actionFn) {
 
 attachButtonTouchHandler(document.getElementById('btn-attack'), triggerAttack);
 attachButtonTouchHandler(document.getElementById('btn-skill1'), triggerSkill1);
+
+// =============================================
+// KIỂM TRA HƯỚNG MÀN HÌNH CHỦ ĐỘNG (CHỈ HIỆN KHI MÀN HÌNH DỌC)
+// =============================================
+function checkOrientation() {
+    const overlay = document.getElementById('rotate-device-overlay');
+    if (!overlay) return;
+
+    const isTouch    = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isPortrait = window.innerHeight > window.innerWidth;
+
+    // Chỉ hiện cảnh báo khi là thiết bị cảm ứng VÀ thực sự đang xoay DỌC
+    if (isTouch && isPortrait) {
+        overlay.style.display = 'flex';
+    } else {
+        overlay.style.display = 'none';
+    }
+}
+
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', checkOrientation);
+checkOrientation();
+
